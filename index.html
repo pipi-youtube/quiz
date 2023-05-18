@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>クイズアプリ</title>
-  <style>
+<style>
     /* 共通のスタイル */
     body {
       margin: 0;
@@ -12,7 +12,6 @@
     }
 
     .container {
-      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       background-color: rgba(255, 255, 255, 0.8);
@@ -40,6 +39,7 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.2s ease;
+      width: 100%;
     }
 
     .choice:hover {
@@ -83,10 +83,19 @@
     /* 縦画面のスタイル */
     @media screen and (orientation: portrait) {
       .container {
+        max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
         padding: 10px;
+      }
+
+      .choice {
+        width: 100%;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   </style>
+
 </head>
 <body>
   <div class="container">
