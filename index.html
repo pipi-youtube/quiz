@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>クイズアプリ</title>
+  <style>
+    /* スタイルを追加する場合はここに記述します */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      background-image: url("balloon.gif");
+      background-repeat: repeat;
+      background-position: center center;
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .choices {
+      margin-bottom: 20px;
+    }
+
+    .choice {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .choice:hover {
+      background-color: #f1f1f1;
+    }
+
+    .correct-answer {
+      color: green;
+      animation: correct-animation 1s ease;
+    }
+
+    @keyframes correct-animation {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .wrong-answer {
+      color: red;
+    }
+
+    .score {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .end-message {
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>クイズアプリ</h1>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="score" id="score"></div>
+    <div class="end-message" id="end-message"></div>
+    <audio id="bg-music" src="bg-music.mp3" loop></audio>
+  </div>
+
+  <script>
+    var questions = [
+      {
+        question: "日本の首都は？",
+        choices: ["東京", "京都", "大阪"],
+        correctAnswer: 0
+      },
+      {
+        question: "世界最大の湖は？",
+        choices: ["琵琶湖", "カスピ海", "バイカル湖"],
+        correctAnswer: 1
+      },
+      {
+        question: "1+1は？",
+        choices: ["1", "2", "3"],
+        correctAnswer: 1
+      }
+    ];
+
+    var currentQuestion = 0;
+    var score = 0;
+
+    var bgMusic = document.getElementById("bg-music");
+    bgMusic.play();
+
+    function displayQuestion() {
+      var questionContainer = document.getElementById("question");
+     
+var choicesContainer = document.getElementById("choices");
+var currentQuestionData = questions[currentQuestion];
+  questionContainer.textContent = currentQuestionData.question;
+
+  choicesContainer.innerHTML = "";
+
+  currentQuestionData.choices.forEach(function(choice, index) {
+    var choiceElement = document.createElement("div");
+    choiceElement.classList.add("choice");
+    choiceElement.textContent = choice;
+    choiceElement.onclick = function() {
+      selectAnswer(index, choiceElement);
+    };
+    choicesContainer.appendChild(choiceElement);
+  });
+}
+
+function selectAnswer(choiceIndex, choiceElement) {
+  var currentQuestionData = questions[currentQuestion];
+
+  if (choiceIndex === currentQuestionData.correctAnswer) {
+    score++;
+    choiceElement.classList.add("correct-answer");
+    choiceElement.style.animationIterationCount = "1";
+  } else {
+    choiceElement.classList.add("wrong-answer");
+  }
+
+  // 回答後は選択できないようにする
+  var choices = document.getElementById("choices").children;
+  for (var i = 0; i < choices.length; i++) {
+    choices[i].onclick = null;
+  }
+
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    setTimeout(function() {
+      displayQuestion();
+    }, 1000); // 1秒後に次の問題を表示
+  } else {
+    setTimeout(function() {
+      endQuiz();
+    }, 1000); // 1秒後にクイズ終了を表示
+  }
+}
+
+function endQuiz() {
+  var questionContainer = document.getElementById("question");
+  var choicesContainer = document.getElementById("choices");
+  var scoreContainer = document.getElementById("score");
+  var endMessageContainer = document.getElementById("end-message");
+
+  questionContainer.textContent = "";
+  choicesContainer.innerHTML = "";
+  scoreContainer.textContent = "あなたのスコア: " + score + "/" + questions.length;
+  endMessageContainer.textContent = "クイズ終了！";
+
+  if (score === questions.length) {
+    document.body.style.animation = "balloon-animation 10s linear infinite";
+  }
+
+  bgMusic.pause(); // クイズ終了時に音楽を停止
+}
+
+displayQuestion();
+  </script>
+</body>
+</html>
