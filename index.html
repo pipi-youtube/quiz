@@ -130,6 +130,19 @@
   </div>
 
   <script>
+      // JavaScriptのコード
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      quizScreen.classList.add('active');
+      // クイズのロジックを追加する
+    }
+
+    function nextQuestion() {
+      // 次の問題に進む処理を実装する
+    }
     const questions = [
       {
         question: "質問1",
