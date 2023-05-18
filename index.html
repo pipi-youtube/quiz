@@ -3,22 +3,20 @@
 <head>
   <title>クイズアプリ</title>
   <style>
-    /* スタイルを追加する場合はここに記述します */
+    /* 共通のスタイル */
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
       font-size: 18px;
-      background-image: url("balloon.gif");
-      background-repeat: repeat;
-      background-position: center center;
-      background-size: cover;
     }
 
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
     }
 
     h1 {
@@ -54,7 +52,7 @@
     }
 
     @keyframes correct-animation {
-      0% {
+       0% {
         transform: scale(1);
       }
       50% {
@@ -80,6 +78,13 @@
       font-weight: bold;
       font-size: 24px;
       margin-bottom: 20px;
+    }
+
+    /* 縦画面のスタイル */
+    @media screen and (orientation: portrait) {
+      .container {
+        padding: 10px;
+      }
     }
   </style>
 </head>
