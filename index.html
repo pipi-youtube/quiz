@@ -3,7 +3,6 @@
 <head>
   <title>クイズアプリ</title>
   <style>
-    /* 共通のスタイル */
     body {
       margin: 0;
       padding: 0;
@@ -18,20 +17,21 @@
 
     .container {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
       background-image: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
       background-size: 400% 400%;
-      animation: background-animation 30s linear infinite;
+      animation: background-animation 10s linear infinite;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 50px;
       box-sizing: border-box;
-      transform: scale(1.2);
+      transform: scale(0.8); /* 修正: 大きさを調整 */
     }
 
     h1 {
@@ -49,6 +49,9 @@
 
     .choices {
       margin-bottom: 20px;
+      display: flex; /* 修正: 選択肢を横並びにする */
+      flex-direction: column; /* 修正: 縦方向に表示する */
+      align-items: center; /* 修正: 中央寄せする */
     }
 
     .choice {
@@ -64,6 +67,7 @@
       background-image: linear-gradient(45deg, #00c9ff, #92fe9d);
       background-size: 200% 200%;
       animation: choice-animation 0.8s ease infinite;
+      max-width: 200px; /* 修正: 選択肢の最大幅を指定 */
     }
 
     .choice:hover {
@@ -73,18 +77,6 @@
     .correct-answer {
       color: #ff0000;
       animation: correct-animation 1s ease;
-    }
-
-    @keyframes correct-animation {
-       0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
     }
 
     .wrong-answer {
@@ -113,6 +105,11 @@
       .container {
         max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
         padding: 10px;
+      }
+
+      .choices {
+        flex-direction: column; /* 縦方向に表示する */
+        align-items: center; /* 中央寄せする */
       }
 
       .choice {
@@ -147,7 +144,20 @@
         background-position: 0% 50%;
       }
     }
+
+    @keyframes correct-animation {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
+
 </head>
 <body>
   <div class="container">
