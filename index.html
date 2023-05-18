@@ -10,121 +10,158 @@
       font-family: Arial, sans-serif;
       font-size: 18px;
     }
-.container {
-  margin: 0 auto;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-}
 
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+    /* 新しく追加されたスタイル */
+    html, body {
+      height: 100%;
+    }
 
-.question {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+    .container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
+      background-size: 400% 400%;
+      animation: background-animation 30s linear infinite;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+      box-sizing: border-box;
+      transform: scale(1.2);
+    }
 
-.choices {
-  margin-bottom: 20px;
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
 
-.choice {
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  width: 100%;
-}
+    .question {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #ffffff;
+    }
 
-.choice:hover {
-  background-color: #f1f1f1;
-}
+    .choices {
+      margin-bottom: 20px;
+    }
 
-.correct-answer {
-  color: green;
-  animation: correct-animation 1s ease;
-}
+    .choice {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      font-size: 20px;
+      color: #ffffff;
+      background-image: linear-gradient(45deg, #00c9ff, #92fe9d);
+      background-size: 200% 200%;
+      animation: choice-animation 0.8s ease infinite;
+    }
 
-@keyframes correct-animation {
-   0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
+    .choice:hover {
+      background-color: #f1f1f1;
+    }
 
-.wrong-answer {
-  color: red;
-}
+    .correct-answer {
+      color: #ff0000;
+      animation: correct-animation 1s ease;
+    }
 
-.score {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
+    @keyframes correct-animation {
+       0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
 
-.end-message {
-  text-align: center;
-  font-weight: bold;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+    .wrong-answer {
+      color: #ffffff;
+      background-image: linear-gradient(45deg, #ff0000, #ff6a00);
+      animation: choice-animation 0.8s ease infinite;
+    }
 
-.mode-selection {
-  text-align: center;
-  margin-bottom: 20px;
-}
+    .score {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
 
-.mode-button {
-  margin: 10px;
-}
+    .end-message {
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
 
-/* 縦画面のスタイル */
-@media screen and (orientation: portrait) {
-  .container {
-    max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
-    padding: 10px;
-  }
+    /* 縦画面のスタイル */
+    @media screen and (orientation: portrait) {
+      .container {
+        max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
+        padding: 10px;
+      }
 
-  .choice {
-    width: 100%;
-    max-width: 200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
+      .choice {
+        width: 100%;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
 
- </style>
+    /* アニメーション */
+    @keyframes background-animation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes choice-animation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>クイズアプリ</h1>
-    <div id="mode-selection" class="mode-selection">
-      <button class="mode-button" onclick="selectMode('easy')">Easy Mode</button>
-      <button class="mode-button" onclick="selectMode('hard')">Hard Mode</button>
-    </div>
-    <div id="quiz-container" style="display: none;">
-      <div class="question" id="question"></div>
-      <div class="choices" id="choices"></div>
-      <div class="score" id="score"></div>
-      <div class="end-message" id="end-message"></div>
-      <button id="start-button" onclick="startQuiz()">クイズを開始</button>
-      <button id="answer-button" onclick="checkAnswer()" style="display: none;">回答する</button>
-      <button id="next-button" onclick="nextQuestion()" style="display: none;">次の問題</button>
-      <button id="restart-button" onclick="restartQuiz()" style="display: none;">もう一度プレイ</button>
-      <button id="home-button" onclick="goToHome()" style="display: none;">ホームに戻る</button>
-    </div>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="score" id="score"></div>
+    <div class="end-message" id="end-message"></div>
+    <button id="start-button" onclick="startQuiz()">クイズを開始</button>
+    <button id="answer-button" onclick="checkAnswer()" style="display: none;">回答する</button>
+    <button id="next-button" onclick="nextQuestion()" style="display: none;">次の問題</button>
+    <button id="restart-button" onclick="restartQuiz()" style="display: none;">もう一度プレイ</button>
   </div>
-  <script>
+<script>
     const easyModeQuestions = [
       {
         question: "質問1 (Easy Mode)",
@@ -199,6 +236,37 @@ h1 {
       });
     }
 
+
+
+
+
+// 回答をチェックする
+function checkAnswer(choiceIndex) {
+  const currentQuestion = questions[currentQuestionIndex];
+  if (choiceIndex === currentQuestion.correctAnswer) {
+    score++;
+    choicesElement.childNodes[choiceIndex].classList.add("correct-answer");
+  } else {
+    choicesElement.childNodes[choiceIndex].classList.add("wrong-answer");
+    choicesElement.childNodes[currentQuestion.correctAnswer].classList.add("correct-answer");
+  }
+
+  disableChoices();
+      answerButton.style.display = "none";
+      nextButton.style.display = "block";
+
+      if (currentQuestionIndex === getQuestions().length - 1) {
+        endQuiz();
+      }
+    }
+
+
+
+
+
+
+
+
     // 回答をチェックする
     function checkAnswer(choiceIndex) {
       const currentQuestion = getQuestion();
@@ -229,15 +297,31 @@ h1 {
       answerButton.style.display = "block";
     }
 
-    // クイズ終了時の処理
-    function endQuiz() {
-      questionElement.textContent = "";
-      choicesElement.innerHTML = "";
-      scoreElement.textContent = `スコア: ${score} / ${getQuestions().length}`;
-      endMessageElement.textContent = "クイズ終了";
-      restartButton.style.display = "block";
-      homeButton.style.display = "block";
-    }
+   // クイズ終了時の処理
+function endQuiz() {
+  questionElement.textContent = "";
+  choicesElement.innerHTML = "";
+  scoreElement.textContent = `スコア: ${score} / ${getQuestions().length}`;
+  endMessageElement.textContent = "クイズ終了";
+  nextButton.style.display = "none"; // 次の問題ボタンを非表示にする
+  restartButton.style.display = "block";
+  homeButton.style.display = "block";
+}
+
+// 次の問題に進む
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < getQuestions().length) {
+    renderQuestion();
+    resetChoices();
+    enableChoices();
+    nextButton.style.display = "none";
+    answerButton.style.display = "block";
+  } else {
+    endQuiz();
+  }
+}
+
 
     // クイズをリスタートする
     function restartQuiz() {
