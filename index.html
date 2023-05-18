@@ -3,385 +3,270 @@
 <head>
   <title>クイズアプリ</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      font-size: 18px;
-    }
-
-    /* 新しく追加されたスタイル */
+    /* スタイルの定義 */
+    
     html, body {
-      height: 100%;
-    }
+  height: 100%;
+}
 
-    .container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      height: 80%;
-      background-image: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
-      background-size: 400% 400%;
-      animation: background-animation 10s linear infinite;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 50px;
-      box-sizing: border-box;
-      transform: scale(0.8); /* 修正: 大きさを調整 */
-    }
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    h1 {
+
+    .quiz-container {
+      max-width: 500px;
+      margin: 0 auto;
       text-align: center;
-      margin-bottom: 20px;
-      color: #ffffff;
     }
 
     .question {
-      font-weight: bold;
-      margin-bottom: 10px;
-      font-size: 24px;
-      color: #ffffff;
+      font-size: 20px;
+      margin-bottom: 20px;
     }
 
     .choices {
-      margin-bottom: 20px;
-      display: flex; /* 修正: 選択肢を横並びにする */
-      flex-direction: column; /* 修正: 縦方向に表示する */
-      align-items: center; /* 修正: 中央寄せする */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .choice {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      width: 100%;
-      font-size: 20px;
-      color: #ffffff;
-      background-image: linear-gradient(45deg, #00c9ff, #92fe9d);
-      background-size: 200% 200%;
-      animation: choice-animation 0.8s ease infinite;
-      max-width: 200px; /* 修正: 選択肢の最大幅を指定 */
+      margin-bottom: 10px;
     }
 
-    .choice:hover {
-      background-color: #f1f1f1;
+    .answer-button,
+    .next-button,
+    .restart-button,
+    .home-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      display: none;
     }
 
     .correct-answer {
-      color: #ff0000;
-      animation: correct-animation 1s ease;
+      background-color: #2ecc71;
     }
 
     .wrong-answer {
-      color: #ffffff;
-      background-image: linear-gradient(45deg, #ff0000, #ff6a00);
-      animation: choice-animation 0.8s ease infinite;
-    }
-
-    .score {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #ffffff;
-    }
-
-    .end-message {
-      text-align: center;
-      font-weight: bold;
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #ffffff;
-    }
-
-    /* 縦画面のスタイル */
-    @media screen and (orientation: portrait) {
-      .container {
-        max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
-        padding: 10px;
-      }
-
-      .choices {
-        flex-direction: column; /* 縦方向に表示する */
-        align-items: center; /* 中央寄せする */
-      }
-
-      .choice {
-        width: 100%;
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-    }
-
-    /* アニメーション */
-    @keyframes background-animation {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
-    @keyframes choice-animation {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
-    @keyframes correct-animation {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
+      background-color: #e74c3c;
     }
   </style>
-
 </head>
 <body>
-  <div class="container">
-    <h1>クイズアプリ</h1>
-    <div class="question" id="question"></div>
-    <div class="choices" id="choices"></div>
-    <div class="score" id="score"></div>
-    <div class="end-message" id="end-message"></div>
-    <button id="start-button" onclick="startQuiz()">クイズを開始</button>
-    <button id="answer-button" onclick="checkAnswer()" style="display: none;">回答する</button>
-    <button id="next-button" onclick="nextQuestion()" style="display: none;">次の問題</button>
-    <button id="restart-button" onclick="restartQuiz()" style="display: none;">もう一度プレイ</button>
+  <div class="mode-selection">
+    <h1>モードを選択してください</h1>
+    <button onclick="startQuiz('easy')">Easy Mode</button>
+    <button onclick="startQuiz('normal')">Normal Mode</button>
+    <button onclick="startQuiz('hard')">Hard Mode</button>
   </div>
-<script>
+
+  <div class="quiz-container" style="display: none;">
+    <h2 class="question"></h2>
+    <div class="choices"></div>
+    <button class="answer-button" onclick="checkAnswer()">回答する</button>
+    <button class="next-button" onclick="nextQuestion()">次の問題</button>
+    <button class="restart-button" onclick="restartQuiz()">リスタート</button>
+    <button class="home-button" onclick="goToHome()">ホームに戻る</button>
+    <p class="score"></p>
+    <p class="end-message"></p>
+  </div>
+
+  <script>
+    let selectedMode;
+    const modeSelectionElement = document.querySelector(".mode-selection");
+    const quizContainerElement = document.querySelector(".quiz-container");
+    const questionElement = document.querySelector(".question");
+    const choicesElement = document.querySelector(".choices");
+    const answerButton = document.querySelector(".answer-button");
+    const nextButton = document.querySelector(".next-button");
+    const restartButton = document.querySelector(".restart-button");
+    const homeButton = document.querySelector(".home-button");
+    const scoreElement = document.querySelector(".score");
+    const endMessageElement = document.querySelector(".end-message");
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startQuiz(mode) {
+      selectedMode = mode;
+      modeSelectionElement.style.display = "none";
+      quizContainerElement.style.display = "block";
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const currentQuestion = getQuestion();
+      questionElement.textContent = currentQuestion.question;
+      choicesElement.innerHTML = "";
+
+      currentQuestion.choices.forEach((choice, index) => {
+        const choiceElement = document.createElement("button");
+        choiceElement.classList.add("choice");
+        choiceElement.textContent = choice;
+        choiceElement.setAttribute("onclick", "selectChoice(" + index + ")");
+        choicesElement.appendChild(choiceElement);
+      });
+
+      resetChoices();
+      nextButton.style.display = "none";
+      answerButton.style.display = "block";
+      scoreElement.textContent = "Score: " + score;
+      endMessageElement.textContent = "";
+    }
+
+    function selectChoice(choiceIndex) {
+      const choices = choicesElement.children;
+      for (let i = 0; i < choices.length; i++) {
+        choices[i].classList.remove("selected-choice");
+      }
+      choices[choiceIndex].classList.add("selected-choice");
+      answerButton.disabled = false;
+    }
+
+    function checkAnswer() {
+      const currentQuestion = getQuestion();
+      const selectedChoice = choicesElement.querySelector(".selected-choice");
+      if (!selectedChoice) {
+        return;
+      }
+
+      const selectedChoiceIndex = Array.from(choicesElement.children).indexOf(selectedChoice);
+      const isCorrect = selectedChoiceIndex === currentQuestion.correctAnswer;
+      if (isCorrect) {
+        selectedChoice.classList.add("correct-answer");
+        score++;
+      } else {
+        selectedChoice.classList.add("wrong-answer");
+        choicesElement.children[currentQuestion.correctAnswer].classList.add("correct-answer");
+      }
+
+      answerButton.disabled = true;
+      nextButton.style.display = "block";
+      answerButton.style.display = "none";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < getQuestions().length) {
+        renderQuestion();
+      } else {
+        showEndMessage();
+      }
+    }
+
+    function showEndMessage() {
+      questionElement.textContent = "";
+      choicesElement.innerHTML = "";
+      scoreElement.textContent = "Final Score: " + score + "/" + getQuestions().length;
+
+      let endMessage;
+      if (score === getQuestions().length) {
+        endMessage = "すべての問題に正解しました！おめでとうございます！";
+      } else if (score >= getQuestions().length / 2) {
+        endMessage = "お疲れ様でした！もう少し頑張りましょう！";
+      } else {
+        endMessage = "残念ながら合格点に届きませんでした。もう一度挑戦してみましょう！";
+      }
+
+      endMessageElement.textContent = endMessage;
+      nextButton.style.display = "none";
+      restartButton.style.display = "block";
+      homeButton.style.display = "block";
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      restartButton.style.display = "none";
+      homeButton.style.display = "none";
+      renderQuestion();
+    }
+
+    function goToHome() {
+      modeSelectionElement.style.display = "block";
+      quizContainerElement.style.display = "none";
+      restartButton.style.display = "none";
+      homeButton.style.display = "none";
+    }
+
+    function getQuestions() {
+      if (selectedMode === "easy") {
+        return easyModeQuestions;
+      } else if (selectedMode === "normal") {
+        return normalModeQuestions;
+      } else if (selectedMode === "hard") {
+        return hardModeQuestions;
+      }
+    }
+
+    function getQuestion() {
+      return getQuestions()[currentQuestionIndex];
+    }
+
+    function resetChoices() {
+      const choices = choicesElement.children;
+      for (let i = 0; i < choices.length; i++) {
+        choices[i].classList.remove("correct-answer", "wrong-answer", "selected-choice");
+      }
+    }
+
+    // 問題データの定義
     const easyModeQuestions = [
       {
-        question: "質問1 (Easy Mode)",
+        question: "簡単モードの質問1",
         choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
         correctAnswer: 0
       },
       {
-        question: "質問2 (Easy Mode)",
+        question: "簡単モードの質問2",
         choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
         correctAnswer: 1
       },
-      // 他のEasy Modeの質問を追加する
+      {
+        question: "簡単モードの質問3",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
+        correctAnswer: 2
+      }
+    ];
+
+    const normalModeQuestions = [
+      {
+        question: "ノーマルモードの質問1",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
+        correctAnswer: 1
+      },
+      {
+        question: "ノーマルモードの質問2",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
+        correctAnswer: 0
+      },
+      {
+        question: "ノーマルモードの質問3",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
+        correctAnswer: 3
+      }
     ];
 
     const hardModeQuestions = [
       {
-        question: "質問1 (Hard Mode)",
+        question: "ハードモードの質問1",
         choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
         correctAnswer: 2
       },
       {
-        question: "質問2 (Hard Mode)",
+        question: "ハードモードの質問2",
         choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
-        correctAnswer: 3
+        correctAnswer: 1
       },
-      // 他のHard Modeの質問を追加する
+      {
+        question: "ハードモードの質問3",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
+        correctAnswer: 0
+      }
     ];
-
-    let selectedMode = "";
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    const modeSelectionElement = document.getElementById("mode-selection");
-    const quizContainerElement = document.getElementById("quiz-container");
-    const questionElement = document.getElementById("question");
-    const choicesElement = document.getElementById("choices");
-    const scoreElement = document.getElementById("score");
-    const endMessageElement = document.getElementById("end-message");
-    const startButton = document.getElementById("start-button");
-    const answerButton = document.getElementById("answer-button");
-    const nextButton = document.getElementById("next-button");
-    const restartButton = document.getElementById("restart-button");
-    const homeButton = document.getElementById("home-button");
-
-    // モードを選択する
-    function selectMode(mode) {
-      selectedMode = mode;
-      modeSelectionElement.style.display = "none";
-      quizContainerElement.style.display = "block";
-      startQuiz();
-    }
-
-    // クイズを開始する
-    function startQuiz() {
-      startButton.style.display = "none";
-      renderQuestion();
-      answerButton.style.display = "block";
-    }
-
-    // 問題を表示する
-    function renderQuestion() {
-      const currentQuestion = getQuestion();
-      questionElement.textContent = currentQuestion.question;
-
-      choicesElement.innerHTML = "";
-      currentQuestion.choices.forEach((choice, index) => {
-        const choiceButton = document.createElement("button");
-        choiceButton.textContent = choice;
-        choiceButton.classList.add("choice");
-        choiceButton.setAttribute("onclick", `checkAnswer(${index})`);
-        choicesElement.appendChild(choiceButton);
-      });
-    }
-
-
-
-
-
-// 回答をチェックする
-function checkAnswer(choiceIndex) {
-  const currentQuestion = questions[currentQuestionIndex];
-  if (choiceIndex === currentQuestion.correctAnswer) {
-    score++;
-    choicesElement.childNodes[choiceIndex].classList.add("correct-answer");
-  } else {
-    choicesElement.childNodes[choiceIndex].classList.add("wrong-answer");
-    choicesElement.childNodes[currentQuestion.correctAnswer].classList.add("correct-answer");
-  }
-
-  disableChoices();
-      answerButton.style.display = "none";
-      nextButton.style.display = "block";
-
-      if (currentQuestionIndex === getQuestions().length - 1) {
-        endQuiz();
-      }
-    }
-
-
-
-
-
-
-
-
-    // 回答をチェックする
-    function checkAnswer(choiceIndex) {
-      const currentQuestion = getQuestion();
-      if (choiceIndex === currentQuestion.correctAnswer) {
-        score++;
-        choicesElement.childNodes[choiceIndex].classList.add("correct-answer");
-      } else {
-        choicesElement.childNodes[choiceIndex].classList.add("wrong-answer");
-        choicesElement.childNodes[currentQuestion.correctAnswer].classList.add("correct-answer");
-      }
-
-      disableChoices();
-      answerButton.style.display = "none";
-      nextButton.style.display = "block";
-
-      if (currentQuestionIndex === getQuestions().length - 1) {
-        endQuiz();
-      }
-    }
-
-    // 次の問題に進む
-    function nextQuestion() {
-      currentQuestionIndex++;
-      renderQuestion();
-      resetChoices();
-      enableChoices();
-      nextButton.style.display = "none";
-      answerButton.style.display = "block";
-    }
-
-   // クイズ終了時の処理
-function endQuiz() {
-  questionElement.textContent = "";
-  choicesElement.innerHTML = "";
-  scoreElement.textContent = `スコア: ${score} / ${getQuestions().length}`;
-  endMessageElement.textContent = "クイズ終了";
-  nextButton.style.display = "none"; // 次の問題ボタンを非表示にする
-  restartButton.style.display = "block";
-  homeButton.style.display = "block";
-}
-
-// 次の問題に進む
-function nextQuestion() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < getQuestions().length) {
-    renderQuestion();
-    resetChoices();
-    enableChoices();
-    nextButton.style.display = "none";
-    answerButton.style.display = "block";
-  } else {
-    endQuiz();
-  }
-}
-
-
-    // クイズをリスタートする
-    function restartQuiz() {
-      currentQuestionIndex = 0;
-      score = 0;
-      resetChoices();
-      renderQuestion();
-      scoreElement.textContent = "";
-      endMessageElement.textContent = "";
-      restartButton.style.display = "none";
-      homeButton.style.display = "none";
-    }
-
-    // ホームに戻る
-    function goToHome() {
-      currentQuestionIndex = 0;
-      score = 0;
-      resetChoices();
-      modeSelectionElement.style.display = "block";
-      quizContainerElement.style.display = "none";
-      scoreElement.textContent = "";
-      endMessageElement.textContent = "";
-      restartButton.style.display = "none";
-      homeButton.style.display = "none";
-    }
-
-    // 選択肢を無効化する
-    function disableChoices() {
-      choicesElement.childNodes.forEach((choice) => {
-        choice.setAttribute("disabled", true);
-      });
-    }
-
-    // 選択肢をリセットする
-    function resetChoices() {
-      choicesElement.childNodes.forEach((choice) => {
-        choice.classList.remove("correct-answer", "wrong-answer");
-        choice.removeAttribute("disabled");
-      });
-    }
-
-    // 現在のモードに基づいて質問リストを取得する
-    function getQuestions() {
-      return selectedMode === "easy" ? easyModeQuestions : hardModeQuestions;
-    }
-
-    // 現在の質問を取得する
-    function getQuestion() {
-      return getQuestions()[currentQuestionIndex];
-    }
   </script>
 </body>
 </html>
