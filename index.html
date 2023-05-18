@@ -5,144 +5,112 @@
   <style>
     /* 共通のスタイル */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
     }
 
     .container {
-      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
     }
 
-    /* スタート画面のスタイル */
-    .start-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .start-screen h1 {
-      font-size: 30px;
+    h1 {
+      text-align: center;
       margin-bottom: 20px;
-    }
-
-    /* クイズ画面のスタイル */
-    .quiz-screen {
-      display: none;
-    }
-
-    .quiz-screen.active {
-      display: block;
     }
 
     .question {
-      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .choices {
       margin-bottom: 20px;
     }
 
-    .choices button {
-      display: block;
-      width: 100%;
-      margin-bottom: 10px;
+    .choice {
+      margin: 10px 0;
       padding: 10px;
-      font-size: 18px;
-      background-color: #fff;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+    }
+
+    .choice:hover {
+      background-color: #f1f1f1;
+    }
+
+    .correct-answer {
+      color: green;
+      animation: correct-animation 1s ease;
+    }
+
+    @keyframes correct-animation {
+       0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .wrong-answer {
+      color: red;
     }
 
     .score {
-      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
       margin-bottom: 20px;
     }
 
     .end-message {
+      text-align: center;
+      font-weight: bold;
       font-size: 24px;
       margin-bottom: 20px;
     }
 
-    .restart-button {
-      display: none;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    /* メディアクエリ */
-    @media screen and (max-width: 600px) {
+    /* 縦画面のスタイル */
+    @media screen and (orientation: portrait) {
       .container {
+        max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
         padding: 10px;
       }
 
-      .start-screen h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
-      }
-
-      .question {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
-
-      .choices button {
-        font-size: 16px;
-      }
-
-      .score {
-        font-size: 16px;
-        margin-bottom: 10px;
-      }
-
-      .end-message {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
-
-      .restart-button {
-        font-size: 16px;
-        padding: 8px 16px;
+      .choice {
+        width: 100%;
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="start-screen" id="start-screen">
-      <h1>クイズアプリ</h1>
-      <button id="start-button" onclick="startQuiz()">クイズを開始</button>
-    </div>
-
-    <div class="quiz-screen" id="quiz-screen">
-      <div class="question" id="question"></div>
-      <div class="choices" id="choices"></div>
-      <div class="score" id="score"></div>
-      <div class="end-message" id="end-message"></div>
-      <button class="restart-button" id="restart-button" onclick="restartQuiz()">もう一度プレイ</button>
-    </div>
+   <div class="container">
+    <h1>クイズアプリ</h1>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="score" id="score"></div>
+    <div class="end-message" id="end-message"></div>
+    <audio id="bg-music" src="bg-music.mp3" loop></audio>
+    <button id="start-button" onclick="startQuiz()">クイズを開始</button>
+    <button id="answer-button" onclick="checkAnswer()" style="display: none;">回答する</button>
+    <button id="next-button" onclick="nextQuestion()" style="display: none;">次の問題</button>
+    <button id="restart-button" onclick="restartQuiz()" style="display: none;">もう一度プレイ</button>
   </div>
 
   <script>
-      // JavaScriptのコード
-    const startScreen = document.getElementById('start-screen');
-    const quizScreen = document.getElementById('quiz-screen');
-
-    function startQuiz() {
-      startScreen.style.display = 'none';
-      quizScreen.classList.add('active');
-      // クイズのロジックを追加する
-    }
-
-    function nextQuestion() {
-      // 次の問題に進む処理を実装する
-    }
     const questions = [
       {
         question: "質問1",
@@ -255,5 +223,7 @@
       answerButton.style.display = "block";
     }
   </script>
+
+
 </body>
 </html>
