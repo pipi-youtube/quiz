@@ -2,205 +2,245 @@
 <html>
 <head>
   <title>クイズアプリ</title>
-<style>
+  <style>
     /* 共通のスタイル */
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      font-size: 18px;
     }
 
     .container {
+      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 10px;
     }
 
-    h1 {
-      text-align: center;
+    /* スタート画面のスタイル */
+    .start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .start-screen h1 {
+      font-size: 30px;
       margin-bottom: 20px;
+    }
+
+    /* クイズ画面のスタイル */
+    .quiz-screen {
+      display: none;
+    }
+
+    .quiz-screen.active {
+      display: block;
     }
 
     .question {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .choices {
-      margin-bottom: 20px;
-    }
-
-    .choice {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      width: 100%;
-    }
-
-    .choice:hover {
-      background-color: #f1f1f1;
-    }
-
-    .correct-answer {
-      color: green;
-      animation: correct-animation 1s ease;
-    }
-
-    @keyframes correct-animation {
-       0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .wrong-answer {
-      color: red;
-    }
-
-    .score {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .end-message {
-      text-align: center;
-      font-weight: bold;
       font-size: 24px;
       margin-bottom: 20px;
     }
 
-    /* 縦画面のスタイル */
-    @media screen and (orientation: portrait) {
+    .choices button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 18px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .score {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .end-message {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .restart-button {
+      display: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* メディアクエリ */
+    @media screen and (max-width: 600px) {
       .container {
-        max-width: 100%; /* 画面幅に合わせて最大幅を設定 */
         padding: 10px;
       }
 
-      .choice {
-        width: 100%;
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
+      .start-screen h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .question {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .choices button {
+        font-size: 16px;
+      }
+
+      .score {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .end-message {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .restart-button {
+        font-size: 16px;
+        padding: 8px 16px;
       }
     }
   </style>
-
 </head>
 <body>
   <div class="container">
-    <h1>クイズアプリ</h1>
-    <div class="question" id="question"></div>
-    <div class="choices" id="choices"></div>
-    <div class="score" id="score"></div>
-    <div class="end-message" id="end-message"></div>
-    <audio id="bg-music" src="bg-music.mp3" loop></audio>
+    <div class="start-screen" id="start-screen">
+      <h1>クイズアプリ</h1>
+      <button id="start-button" onclick="startQuiz()">クイズを開始</button>
+    </div>
+
+    <div class="quiz-screen" id="quiz-screen">
+      <div class="question" id="question"></div>
+      <div class="choices" id="choices"></div>
+      <div class="score" id="score"></div>
+      <div class="end-message" id="end-message"></div>
+      <button class="restart-button" id="restart-button" onclick="restartQuiz()">もう一度プレイ</button>
+    </div>
   </div>
 
   <script>
-    var questions = [
+    const questions = [
       {
-        question: "日本の首都は？",
-        choices: ["東京", "京都", "大阪"],
+        question: "質問1",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
         correctAnswer: 0
       },
       {
-        question: "世界最大の湖は？",
-        choices: ["琵琶湖", "カスピ海", "バイカル湖"],
+        question: "質問2",
+        choices: ["選択肢1", "選択肢2", "選択肢3", "選択肢4"],
         correctAnswer: 1
       },
-      {
-        question: "1+1は？",
-        choices: ["1", "2", "3"],
-        correctAnswer: 1
-      }
+      // 他の質問を追加する
     ];
 
-    var currentQuestion = 0;
-    var score = 0;
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-    var bgMusic = document.getElementById("bg-music");
-    bgMusic.play();
+    const questionElement = document.getElementById("question");
+    const choicesElement = document.getElementById("choices");
+    const scoreElement = document.getElementById("score");
+    const endMessageElement = document.getElementById("end-message");
+    const startButton = document.getElementById("start-button");
+    const answerButton = document.getElementById("answer-button");
+    const nextButton = document.getElementById("next-button");
+    const restartButton = document.getElementById("restart-button");
 
-    function displayQuestion() {
-      var questionContainer = document.getElementById("question");
-     
-var choicesContainer = document.getElementById("choices");
-var currentQuestionData = questions[currentQuestion];
-  questionContainer.textContent = currentQuestionData.question;
+    // クイズを開始する
+    function startQuiz() {
+      startButton.style.display = "none";
+      renderQuestion();
+      answerButton.style.display = "block";
+    }
 
-  choicesContainer.innerHTML = "";
+    // 問題を表示する
+    function renderQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
 
-  currentQuestionData.choices.forEach(function(choice, index) {
-    var choiceElement = document.createElement("div");
-    choiceElement.classList.add("choice");
-    choiceElement.textContent = choice;
-    choiceElement.onclick = function() {
-      selectAnswer(index, choiceElement);
-    };
-    choicesContainer.appendChild(choiceElement);
-  });
-}
+      choicesElement.innerHTML = "";
+      currentQuestion.choices.forEach((choice, index) => {
+        const choiceButton = document.createElement("button");
+        choiceButton.textContent = choice;
+        choiceButton.classList.add("choice");
+        choiceButton.setAttribute("onclick", `checkAnswer(${index})`);
+        choicesElement.appendChild(choiceButton);
+      });
+    }
 
-function selectAnswer(choiceIndex, choiceElement) {
-  var currentQuestionData = questions[currentQuestion];
+    // 回答をチェックする
+    function checkAnswer(choiceIndex) {
+      const currentQuestion = questions[currentQuestionIndex];
+      if (choiceIndex === currentQuestion.correctAnswer) {
+        score++;
+        choicesElement.childNodes[choiceIndex].classList.add("correct-answer");
+      } else {
+        choicesElement.childNodes[choiceIndex].classList.add("wrong-answer");
+      }
 
-  if (choiceIndex === currentQuestionData.correctAnswer) {
-    score++;
-    choiceElement.classList.add("correct-answer");
-    choiceElement.style.animationIterationCount = "1";
-  } else {
-    choiceElement.classList.add("wrong-answer");
-  }
+      disableChoices();
+      answerButton.style.display = "none";
+      nextButton.style.display = "block";
 
-  // 回答後は選択できないようにする
-  var choices = document.getElementById("choices").children;
-  for (var i = 0; i < choices.length; i++) {
-    choices[i].onclick = null;
-  }
+      if (currentQuestionIndex === questions.length - 1) {
+        showEndMessage();
+      }
+    }
 
-  currentQuestion++;
+    // 選択肢のボタンを無効化する
+    function disableChoices() {
+      choicesElement.childNodes.forEach((choiceButton) => {
+        choiceButton.setAttribute("disabled", true);
+      });
+    }
 
-  if (currentQuestion < questions.length) {
-    setTimeout(function() {
-      displayQuestion();
-    }, 1000); // 1秒後に次の問題を表示
-  } else {
-    setTimeout(function() {
-      endQuiz();
-    }, 1000); // 1秒後にクイズ終了を表示
-  }
-}
+    // 次の問題に進む
+    function nextQuestion() {
+      currentQuestionIndex++;
+      resetChoices();
+      renderQuestion();
+      nextButton.style.display = "none";
+      answerButton.style.display = "block";
+    }
 
-function endQuiz() {
-  var questionContainer = document.getElementById("question");
-  var choicesContainer = document.getElementById("choices");
-  var scoreContainer = document.getElementById("score");
-  var endMessageContainer = document.getElementById("end-message");
+    // 選択肢のスタイルをリセットする
+    function resetChoices() {
+      choicesElement.childNodes.forEach((choiceButton) => {
+        choiceButton.classList.remove("correct-answer");
+        choiceButton.classList.remove("wrong-answer");
+        choiceButton.removeAttribute("disabled");
+      });
+    }
 
-  questionContainer.textContent = "";
-  choicesContainer.innerHTML = "";
-  scoreContainer.textContent = "あなたのスコア: " + score + "/" + questions.length;
-  endMessageContainer.textContent = "クイズ終了！";
+    // 終了メッセージを表示する
+    function showEndMessage() {
+      scoreElement.textContent = `スコア: ${score} / ${questions.length}`;
+      endMessageElement.textContent = "クイズ終了";
+      nextButton.style.display = "none";
+      restartButton.style.display = "block";
+    }
 
-  if (score === questions.length) {
-    document.body.style.animation = "balloon-animation 10s linear infinite";
-  }
-
-  bgMusic.pause(); // クイズ終了時に音楽を停止
-}
-
-displayQuestion();
+    // クイズをリスタートする
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      resetChoices();
+      renderQuestion();
+      scoreElement.textContent = "";
+      endMessageElement.textContent = "";
+      restartButton.style.display = "none";
+      answerButton.style.display = "block";
+    }
   </script>
 </body>
 </html>
